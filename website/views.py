@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template, request, flash, jsonify
+from flask import Blueprint, render_template, request, flash, jsonify, send_file
 from flask_login import login_required, current_user
-from .models import Note
+from .models import Upload
 from . import db
+from io import BytesIO
 import json
 
 views = Blueprint('views', __name__)
@@ -11,27 +12,40 @@ views = Blueprint('views', __name__)
 @login_required
 def home():
     if request.method == 'POST': 
-        note = request.form.get('note')#Gets the note from the HTML 
-
-        if len(note) < 1:
-            flash('Note is too short!', category='error') 
-        else:
-            new_note = Note(data=note, user_id=current_user.id)  #providing the schema for the note 
-            db.session.add(new_note) #adding the note to the database 
+        file = request.files['file']
+        if file:
+            upload = Upload(filename=file.filename, data=file.read(), user_id=current_user.id)
+            db.session.add(upload)
             db.session.commit()
-            flash('Note added!', category='success')
+            flash('File uploaded!', category="success")
+        else:
+            flash("Please select a file")
 
-    return render_template("home.html", user=current_user)
+    files = Upload.query.all()
+    return render_template("home.html", user=current_user, files=files)
+
+@views.route('/myfiles', methods=['GET', 'POST'])
+@login_required
+def myfiles():
+    files = Upload.query.filter_by(user_id=current_user.id)
+    return render_template("home.html", user=current_user, files=files)
 
 
-# @views.route('/delete-note', methods=['POST'])
-# def delete_note():  
-#     note = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
-#     noteId = note['noteId']
-#     note = Note.query.get(noteId)
-#     if note:
-#         if note.user_id == current_user.id:
-#             db.session.delete(note)
-#             db.session.commit()
+@views.route('/download', methods=['POST'])
+def download():  
+    file = json.loads(request.data) # this function expects a JSON from the INDEX.js file 
+    fileId = file['fileId']
+    filename = file['filename']
+    print(fileId)
+    upload = Upload.query.filter_by(id=fileId).first()
+    print(1)
+    response = send_file(BytesIO(upload.data), download_name=upload.filename, as_attachment=True)
+    response.headers['Content-Type'] = 'application/octet-stream'
+    response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
+    return response
+    
 
-#     return jsonify({})
+@views.route('/download/<upload_id>')
+def download_file(upload_id):
+    upload = Upload.query.filter_by(id=upload_id).first()
+    return send_file(BytesIO(upload.data), download_name=upload.filename, as_attachment=True)

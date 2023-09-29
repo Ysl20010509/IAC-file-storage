@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
+    %}
+<ul class="list-group list-group-flush" id="files">
+    {% for file in files %}
+    <li class="list-group-item">
+        {{ file.filename }}
+        <button type="button" class="fa fa-download" onClick="download('{{ file.id}}', '{{file.filename }}')">
+        <span aria-hidden="true">&times;</span>
+        </button>
+    </li>
+    {% endfor %}
+    </ul>
