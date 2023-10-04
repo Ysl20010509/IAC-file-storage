@@ -97,6 +97,19 @@
       console.error('Download request failed:', error);
   });
 }
+
+function deleteFile(fileId, filename) {
+  fetch("/delete", {
+    method: "POST",
+    body: JSON.stringify({ fileId: fileId, filename:filename }),
+  }).then(function(response){
+    console.log(filename + " deleted");
+    location.reload();
+  } )
+  .catch(error => {
+    console.error('Delete request failed: ', error);
+  });
+}
 </script>
 {% endblock %}
 
