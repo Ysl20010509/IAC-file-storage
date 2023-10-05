@@ -6,6 +6,10 @@ from flask_login import LoginManager
 db = SQLAlchemy()
 DB_NAME = "iacfile.db"
 
+FOLDER_ID = 0
+PATH = '/'
+PARENTS_ID = []
+PARENTS_PATH = []
 
 def create_app():
     app = Flask(__name__)

@@ -1,11 +1,28 @@
 {% extends "base.html" %} {% block title %}Myfiles{% endblock %} {% block content
     %}
+<h1>Path: {{ path }}</h1>
+
+<ul class="list-group list-group-flush" id="folders">
+    {% if path != '/' %}
+    <li class="list-group-item">
+      <i class="fa fa-arrow-left" onClick="enterFolder('-1', '..')">&nbsp;..</i>
+    </li>
+    {% endif %}
+    {% for folder in folders %}
+    <li class="list-group-item">
+      <i class="fa fa-folder" onClick="enterFolder('{{ folder.id }}', '{{folder.foldername}}')"> 
+        &nbsp;{{ folder.foldername }}
+      </i>
+      <button class="fa fa-close" onClick="deleteFolder('{{folder.id}}', '{{folder.foldername}}')">
+      </button>
+    </li>
+    {% endfor %}
+  </ul>
 <ul class="list-group list-group-flush" id="files">
     {% for file in files %}
-    <li class="list-group-item">
-        {{ file.filename }}
+      <li class="list-group-item">
+        <i class="fa fa-file">&nbsp;{{ file.filename }}</i>
         <button type="button" class="fa fa-download" onClick="download('{{ file.id}}', '{{file.filename }}')">
-            <span aria-hidden="true">&times;</span>
         
         </button>
 

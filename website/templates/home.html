@@ -18,20 +18,41 @@
       <!-- </li>
       {% endfor %}
     </ul> -->
+    <h1>Path: {{ path }}</h1>
     <form method="POST" action="/upload" enctype="multipart/form-data">
         <input name="file" id="file" class="form-control" type="file" multiple>
-        <br />
         <div align="center">
           <button type="submit" class="btn btn-primary">Add File</button>
         </div>
       </form>
-    <h1 align="center">Files</h1>
+      <br />
+    <form method="POST" action="/newfolder">
+      <input name="folder" id="folder" class="form-control" type="text" style="width: 150px;">
+        <button type="submit" class="btn btn-primary">New Folder</button>
+    </form>
+
+
+    <ul class="list-group list-group-flush" id="folders">
+      {% if path != '/' %}
+      <li class="list-group-item">
+        <i class="fa fa-arrow-left" onClick="enterFolder('-1', '..')">&nbsp;..</i>
+      </li>
+      {% endif %}
+      {% for folder in folders %}
+      <li class="list-group-item">
+        <i class="fa fa-folder" onClick="enterFolder('{{ folder.id }}', '{{folder.foldername}}')"> &nbsp;{{ folder.foldername }}
+
+        </i>
+      </li>
+      {% endfor %}
+    </ul>
+
     <ul class="list-group list-group-flush" id="files">
       {% for file in files %}
       <li class="list-group-item">
-        {{ file.filename }}
+        <i class="fa fa-file">&nbsp;{{ file.filename }}</i>
         <button type="button" class="fa fa-download" onClick="download('{{ file.id}}', '{{file.filename }}')">
-          <span aria-hidden="true">&times;</span>
+
         </button>
       </li>
       {% endfor %}

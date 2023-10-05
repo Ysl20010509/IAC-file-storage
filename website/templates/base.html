@@ -110,6 +110,33 @@ function deleteFile(fileId, filename) {
     console.error('Delete request failed: ', error);
   });
 }
+
+function deleteFolder(folderId, foldername) {
+  fetch("/deletefolder", {
+    method: "POST",
+    body: JSON.stringify({ folderId: folderId, foldername:foldername }),
+  }).then(function(response){
+    console.log(response);
+    location.reload();
+  })
+  .catch(error => {
+    console.error('Delete request failed: ', error);
+  });
+}
+
+function enterFolder(folderId, folderName){
+  fetch("/enterfolder", {
+    method: "POST",
+    body: JSON.stringify({ folderId: folderId, folderName: folderName }),
+  }).then(function(response){
+    console.log(response);
+    window.location.href = response.url;
+    location.reload();
+  } )
+  .catch(error => {
+    console.error('Enter folder request failed: ', error);
+  });
+}
 </script>
 {% endblock %}
 
