@@ -37,6 +37,9 @@ def upload():
 @login_required
 def newfolder():
     name = request.form['folder']
+    if (name==""):
+        flash("Please name your folder first", category="error")
+        return redirect(url_for("views.home"))
     exist_folder = Folder.query.filter_by(foldername=name, parent_id=FOLDER_ID).first()
     if exist_folder != None:
         flash(name + ' already exists!', category="error")
