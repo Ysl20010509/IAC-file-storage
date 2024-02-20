@@ -17,6 +17,7 @@ class Folder(db.Model):
     foldername = db.Column(db.String(200))
     parent_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    itar = db.Column(db.Boolean, default=False)
 
     file = db.relationship('Upload')
     
@@ -27,5 +28,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
+    role = db.Column(db.String(50)) #user, admin
+    itar_permission = db.Column(db.Boolean, default=False)
     upload = db.relationship('Upload')
     folder = db.relationship('Folder')
+    

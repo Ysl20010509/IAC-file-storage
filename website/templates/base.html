@@ -140,6 +140,10 @@ function enterFolder(folderId, folderName){
     console.error('Enter folder request failed: ', error);
   });
 }
+
+function preview(fileId, filename) {
+  window.open('/preview/' + fileId, '_blank');
+}
 </script>
 {% endblock %}
 

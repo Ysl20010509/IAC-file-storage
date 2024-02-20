@@ -1,9 +1,9 @@
-from flask import Blueprint, render_template, request, flash, jsonify, send_file, redirect, url_for
+from flask import Blueprint, render_template, request, flash, jsonify, send_file, redirect, url_for, send_from_directory
 from flask_login import login_required, current_user
 from .models import Upload, Folder
 from . import db
 from io import BytesIO
-import json
+import json, base64, mimetypes
 from . import PATH, FOLDER_ID, PARENTS_ID, PARENTS_PATH
 from sqlalchemy import and_, or_, not_
 
@@ -117,6 +117,21 @@ def delete():
     #This has problem
     return redirect(url_for('views.myfiles'))
 
+@views.route('/preview/<file_id>', methods=['GET'])
+def preview(file_id):
+    upload = Upload.query.filter_by(id=file_id).first()
+    if upload:
+        content_type, _ = mimetypes.guess_type(upload.filename)
+        filename = upload.filename
+        if content_type:
+            if content_type.startswith('image'):
+                return render_template('image_preview.html', file_data_base64=base64.b64encode(upload.data).decode('utf-8'), filename=upload.filename, content_type=content_type)
+            elif content_type.startswith('application/pdf'):
+                return render_template('pdf_preview.html', file_data_base64=base64.b64encode(upload.data).decode('utf-8'), filename=filename)
+            else:
+                flash("File type not supported for preview, please download", category='error')
+    return "File Not Found 404"
+
 @views.route('/deletefolder', methods=['POST'])
 def deletefolder():
     param = json.loads(request.data)
@@ -142,3 +157,4 @@ def deletefolder():
 def download_file(upload_id):
     upload = Upload.query.filter_by(id=upload_id).first()
     return send_file(BytesIO(upload.data), download_name=upload.filename, as_attachment=True)
+

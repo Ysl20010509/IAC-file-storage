@@ -15,3 +15,7 @@ function download(fileId, filename) {
   });
 }
 
+
+function preview(fileId, filename) {
+  window.location.href = '/preview/' + fileId;
+}

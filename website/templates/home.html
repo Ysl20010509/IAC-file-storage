@@ -34,10 +34,12 @@
       <li class="list-group-item">
         <i class="fa fa-file">&nbsp;{{ file.filename }}</i>
         <button type="button" class="fa fa-download" onClick="download('{{ file.id}}', '{{file.filename }}')">
-
+        </button>
+        <button type="button" class="fa fa-eye" onClick="preview('{{ file.id }}', '{{ file.filename }}')">
         </button>
       </li>
       {% endfor %}
     </ul>
     
+
     {% endblock %}
