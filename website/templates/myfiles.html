@@ -13,8 +13,15 @@
       <i class="fa fa-folder" onClick="enterFolder('{{ folder.id }}', '{{folder.foldername}}')"> 
         &nbsp;{{ folder.foldername }}
       </i>
-      <button class="fa fa-close" onClick="deleteFolder('{{folder.id}}', '{{folder.foldername}}')">
+      <button class="fa fa-close" title = "Delete Folder" onClick="deleteFolder('{{folder.id}}', '{{folder.foldername}}')">
       </button>
+      {% if folder.itar %}
+      <button class="fa fa-lock" title="Unmark ITAR" onClick="unmarkItar('{{folder.id}}', '{{folder.foldername}}')">
+      </button>
+      {% else %}
+      <button class="fa fa-unlock" title="Mark as ITAR" onClick="markItar('{{folder.id}}', '{{folder.foldername}}')">
+      </button>
+      {% endif %}
     </li>
     {% endfor %}
   </ul>

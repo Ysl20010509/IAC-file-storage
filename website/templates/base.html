@@ -127,19 +127,46 @@ function deleteFolder(folderId, foldername) {
   });
 }
 
-function enterFolder(folderId, folderName){
-  fetch("/enterfolder", {
+function markItar(folderId, foldername) {
+  fetch("/markItar", {
     method: "POST",
-    body: JSON.stringify({ folderId: folderId, folderName: folderName }),
+    body: JSON.stringify({ folderId: folderId, foldername:foldername }),
   }).then(function(response){
     console.log(response);
-    window.location.href = response.url;
     location.reload();
-  } )
+  })
   .catch(error => {
-    console.error('Enter folder request failed: ', error);
+    console.error('Itar define failed: ', error);
   });
 }
+
+function unmarkItar(folderId, foldername) {
+  fetch("/unmarkItar", {
+    method: "POST",
+    body: JSON.stringify({ folderId: folderId, foldername:foldername }),
+  }).then(function(response){
+    console.log(response);
+    location.reload();
+  })
+  .catch(error => {
+    console.error('Itar define failed: ', error);
+  });
+}
+
+function enterFolder(folderId, folderName) {
+    fetch('/enterfolder', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ folderId: folderId, folderName: folderName })
+    }).then(response => {
+        if (response.ok) {
+            window.location.href = '/';
+        }
+    }).catch(error => console.error('Error:', error));
+}
+
 
 function preview(fileId, filename) {
   window.open('/preview/' + fileId, '_blank');

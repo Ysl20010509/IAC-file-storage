@@ -1,9 +1,15 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %} {% block content
     %}
     <h1>Path: {{ path }}</h1>
+
+    <form method="GET" action="/search">
+      <input name="query" id="query" class="form-control" type="text" placeholder="Search files">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    
     <form method="POST" action="/upload" enctype="multipart/form-data">
         <input name="file" id="file" class="form-control" type="file" multiple>
-        <div align="center">
+        <div align="fa-arrow-left">
           <button type="submit" class="btn btn-primary">Add File</button>
         </div>
       </form>

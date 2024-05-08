@@ -21,9 +21,9 @@ def login():
                 login_user(user, remember=True)
                 return redirect(url_for('views.home'))
             else:
-                flash('Incorrect password, try again.', category='error')
+                flash('There is an error in your email or password.', category='error')
         else:
-            flash('Email does not exist.', category='error')
+            flash('There is an error in your email or password.', category='error')
 
     return render_template("login.html", user=current_user)
 
@@ -44,7 +44,17 @@ def sign_up():
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
 
+        try:
+            with open("website/allow_access.txt", "r") as file:
+                allowed_emails = [line.strip() for line in file.readlines()]
+        except FileNotFoundError:
+            flash('The allow_access.txt file does not exist.', category='error')
+            return render_template("signup.html", user=current_user)
+        if email not in allowed_emails:
+            flash('Your email is not authorized to create an account.', category='error')
+            return render_template("signup.html", user=current_user)
         user = User.query.filter_by(email=email).first()
+        
         if user:
             flash('Email already exists.', category='error')
         elif len(email) < 4:
@@ -58,8 +68,8 @@ def sign_up():
         elif len(password1) < 8:
             flash('Password must be at least 8 characters.', category='error')
         else:
-            new_user = User(email=email, first_name=first_name, last_name=last_name, password=generate_password_hash(
-                password1, role='user', method='sha256'))
+            new_user = User(email=email, first_name=first_name, last_name=last_name, role='user', password=generate_password_hash(
+                password1, method='sha256'))
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
